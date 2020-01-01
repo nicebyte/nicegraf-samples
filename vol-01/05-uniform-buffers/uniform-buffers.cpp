@@ -47,7 +47,7 @@ struct app_state {
   ngf::attrib_buffer vert_buffer;
   ngf::index_buffer index_buffer;
   ngf::streamed_uniform<uniform_data> uniform_buffer;
-  uniform_data uniform_data;
+  uniform_data udata;
 };
 
 struct vertex_data {
@@ -194,9 +194,9 @@ init_result on_initialized(uintptr_t native_handle,
 // Called every frame.
 void on_frame(uint32_t w, uint32_t h, float time, void *userdata) {
   app_state *state = (app_state*)userdata;
-  state->uniform_data.time = time;
-  state->uniform_data.aspect_ratio = (float)w / (float)h;
-  state->uniform_buffer.write(state->uniform_data);
+  state->udata.time = time;
+  state->udata.aspect_ratio = (float)w / (float)h;
+  state->uniform_buffer.write(state->udata);
   ngf_irect2d viewport { 0, 0, w, h };
   ngf_cmd_buffer cmd_buf = nullptr;
   ngf_cmd_buffer_info cmd_info;
