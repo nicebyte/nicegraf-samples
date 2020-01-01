@@ -312,6 +312,6 @@ void ngf_imgui::record_rendering_commands(ngf_render_encoder enc) {
   }
 }
 #else
-void ngf_imgui::record_rendering_commands(ngf_cmd_buffer*) {}
+void ngf_imgui::record_rendering_commands(ngf_render_encoder) {}
 #endif
 
