@@ -95,8 +95,9 @@ target_include_directories(common PRIVATE
   
 target_compile_options(common PRIVATE ${COMMON_COMPILE_OPTS})
 
-
 target_link_libraries(common glfw imgui imgui_editor nicegraf nicegraf_util)
+
+add_dependencies(common generated_shaders)
 
 if(WIN32)
   set(NGF_OPENGL_LIB "opengl32.lib")
