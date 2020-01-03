@@ -146,11 +146,13 @@ void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
     // Create the vertex data buffer.
     const ngf_attrib_buffer_info staging_vert_buf_info {
       sizeof(vertices),
-      NGF_BUFFER_STORAGE_HOST_WRITEABLE
+      NGF_BUFFER_STORAGE_HOST_WRITEABLE,
+      NGF_BUFFER_USAGE_XFER_SRC
     };
     const ngf_attrib_buffer_info vert_buf_info{
       sizeof(vertices),
-      NGF_BUFFER_STORAGE_PRIVATE
+      NGF_BUFFER_STORAGE_PRIVATE,
+      NGF_BUFFER_USAGE_XFER_DST
     };
     ngf::attrib_buffer staging_vert_buffer;
     ngf_error err = staging_vert_buffer.initialize(staging_vert_buf_info);
@@ -181,11 +183,13 @@ void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
     // Create index data buffer.
     const ngf_index_buffer_info staging_idx_buf_info {
       sizeof(indices),
-      NGF_BUFFER_STORAGE_HOST_WRITEABLE
+      NGF_BUFFER_STORAGE_HOST_WRITEABLE,
+      NGF_BUFFER_USAGE_XFER_SRC
     };
     const ngf_index_buffer_info idx_buf_info {
       sizeof(indices),
-      NGF_BUFFER_STORAGE_HOST_WRITEABLE
+      NGF_BUFFER_STORAGE_HOST_WRITEABLE,
+      NGF_BUFFER_USAGE_XFER_DST
     };
     ngf::index_buffer staging_idx_buffer;
     err = staging_idx_buffer.initialize(staging_idx_buf_info);
