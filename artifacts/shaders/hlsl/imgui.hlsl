@@ -12,7 +12,7 @@ struct ImGuiPSInput {
   float4 color : COLOR0;
 };
 
-cbuffer MatUniformBuffer : register(b0){
+[vk::binding(0, 0)] cbuffer MatUniformBuffer : register(b0){
   force_column_major float4x4 u_Projection;
 }
 
