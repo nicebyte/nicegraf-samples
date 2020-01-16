@@ -83,6 +83,7 @@ int ENTRYFN(int, char **) {
   // Notify the app.
   int w, h;
   glfwGetFramebufferSize(win, &w, &h);
+  {
   init_result init_data = on_initialized((uintptr_t)GET_GLFW_NATIVE_HANDLE(win),
                                          (uint32_t)w,
                                          (uint32_t)h);
@@ -165,6 +166,7 @@ int ENTRYFN(int, char **) {
   }
   ngf_destroy_render_target(defaultrt);
   on_shutdown(init_data.userdata);
+  }
   glfwTerminate();
   return 0;
 }
@@ -223,7 +225,7 @@ ngf::context create_default_context(uintptr_t handle, uint32_t w, uint32_t h) {
     w, // swapchain image width
     h, // swapchain image height
     handle,
-    NGF_PRESENTATION_MODE_FIFO, // turn off vsync
+    NGF_PRESENTATION_MODE_FIFO,
   };
   ngf_context_info ctx_info = {
     &swapchain_info, // swapchain_info
