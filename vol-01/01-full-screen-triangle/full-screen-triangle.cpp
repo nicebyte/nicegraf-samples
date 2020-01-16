@@ -44,7 +44,7 @@ init_result on_initialized(uintptr_t native_handle,
     NGF_IMAGE_FORMAT_BGRA8, // color format
     NGF_IMAGE_FORMAT_UNDEFINED, // depth format (none)
     0, // number of MSAA samples (0, non-multisampled)
-    2u, // swapchain capacity hint
+    3u, // swapchain capacity hint
     initial_width, // swapchain image width
     initial_height, // swapchain image height
     native_handle,
