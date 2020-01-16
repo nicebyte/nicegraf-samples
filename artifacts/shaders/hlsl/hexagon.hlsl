@@ -12,7 +12,7 @@ struct HexagonPSInput {
 };
 
 #if defined(ANIMATE)
-cbuffer Uniforms : register(b0) {
+[vk::binding(0, 0)] cbuffer Uniforms : register(b0) {
   float u_Time;
   float u_AspectRatio;
 };
