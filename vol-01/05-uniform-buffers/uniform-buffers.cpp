@@ -118,11 +118,10 @@ init_result on_initialized(uintptr_t native_handle,
   // Enable multisampling for anti-aliasing.
   pipeline_data.multisample_info.multisample = true;
   // Configure a simple pipeline layout (1 set 2 descriptors).
-  ngf_descriptor_info descs[2] {
+  ngf_descriptor_info descs[1] {
     {NGF_DESCRIPTOR_UNIFORM_BUFFER, 0u, NGF_DESCRIPTOR_VERTEX_STAGE_BIT},
-    {NGF_DESCRIPTOR_UNIFORM_BUFFER, 1u, NGF_DESCRIPTOR_VERTEX_STAGE_BIT},
   };
-  err = ngf_util_create_simple_layout(descs, 2u, &pipeline_data.layout_info);
+  err = ngf_util_create_simple_layout(descs, 1u, &pipeline_data.layout_info);
   assert(err == NGF_ERROR_OK);
   // Done configuring, initialize the pipeline.
   err = state->pipeline.initialize(pipe_info);
