@@ -181,7 +181,7 @@ void draw_textured_quad(const ngf::streamed_uniform<uniform_data> &ubo,
   ngf::cmd_bind_resources(renc,
                          ngf::descriptor_set<1>::binding<1>::sampler(sampler),
                          ubo.bind_op_at_current_offset(
-                            1, 0, sizeof(pane_uniform_data) * pane));
+                            1, 0, sizeof(pane_uniform_data) * pane, sizeof(pane_uniform_data)));
                          
   ngf_cmd_draw(renc, false, 0u, 6u, 1u);
 }
