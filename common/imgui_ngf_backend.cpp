@@ -279,8 +279,7 @@ void ngf_imgui::record_rendering_commands(ngf_render_encoder enc) {
   attrib_buffer_.reset(attrib_buffer);
   void *mapped_attrib_buffer =
       ngf_attrib_buffer_map_range(attrib_buffer, 0, attrib_buffer_info.size,
-                                  NGF_BUFFER_MAP_WRITE_BIT |
-                                  NGF_BUFFER_MAP_DISCARD_BIT);
+                                  NGF_BUFFER_MAP_WRITE_BIT);
   assert(mapped_attrib_buffer != nullptr);
   memcpy(mapped_attrib_buffer, vertex_data.data(), attrib_buffer_info.size);
   ngf_attrib_buffer_flush_range(attrib_buffer, 0, attrib_buffer_info.size);
@@ -295,8 +294,7 @@ void ngf_imgui::record_rendering_commands(ngf_render_encoder enc) {
   index_buffer_.reset(index_buffer);
   void *mapped_index_buffer =
       ngf_index_buffer_map_range(index_buffer, 0, index_buffer_info.size,
-                                 NGF_BUFFER_MAP_WRITE_BIT |
-                                 NGF_BUFFER_MAP_DISCARD_BIT);
+                                 NGF_BUFFER_MAP_WRITE_BIT);
   assert(mapped_index_buffer != nullptr);
   memcpy(mapped_index_buffer, index_data.data(), index_buffer_info.size);
   ngf_index_buffer_flush_range(index_buffer, 0, index_buffer_info.size);
