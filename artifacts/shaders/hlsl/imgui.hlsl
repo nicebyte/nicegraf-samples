@@ -12,16 +12,16 @@ struct ImGuiPSInput {
   float4 color : COLOR0;
 };
 
-[vk::binding(0, 0)] cbuffer MatUniformBuffer : register(b0){
-  force_column_major float4x4 u_Projection;
+[[vk::binding(0, 0)]] cbuffer MatUniformBuffer : register(b0){
+  float4x4 u_Projection;
 }
 
-[vk::binding(1, 0)] uniform Texture2D u_Texture;
-[vk::binding(2, 0)] uniform sampler u_Sampler;
+[[vk::binding(1, 0)]] uniform Texture2D u_Texture;
+[[vk::binding(2, 0)]] uniform sampler u_Sampler;
 
 ImGuiPSInput VSMain(ImGuiVSInput input) {
   ImGuiPSInput output = {
-    u_Projection * float4(input.position, 0.0, 1.0),
+    mul(u_Projection, float4(input.position, 0.0, 1.0)),
     input.uv,
     input.color
   };

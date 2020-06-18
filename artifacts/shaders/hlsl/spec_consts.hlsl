@@ -1,7 +1,7 @@
 //T: spec-consts vs:VSMain ps:PSMain
 
-[vk::constant_id(0)] const float red = 1.0;
-[vk::constant_id(1)] const float green = 1.0;
+[[vk::constant_id(0)]] const float red = 1.0;
+[[vk::constant_id(1)]] const float green = 1.0;
 
 #include "triangle.hlsl"
 

@@ -12,7 +12,7 @@ struct HexagonPSInput {
 };
 
 #if defined(ANIMATE)
-[vk::binding(0, 0)] cbuffer Uniforms : register(b0) {
+[[vk::binding(0, 0)]] cbuffer Uniforms : register(b0) {
   float u_Time;
   float u_AspectRatio;
 };
@@ -26,7 +26,7 @@ HexagonPSInput VSMain(HexagonVSInput input) {
 #if defined(ANIMATE)
   float theta = u_Time / 2.0;
   float2x2 rot_mtx = { cos(theta), -sin(theta), sin(theta), cos(theta) } ;
-  output.position = float4(rot_mtx * input.position * float2(1.0, u_AspectRatio), 0.0, 1.0);
+  output.position = float4(mul(rot_mtx, input.position) * float2(1.0, u_AspectRatio), 0.0, 1.0);
 #endif
   return output;
 }
