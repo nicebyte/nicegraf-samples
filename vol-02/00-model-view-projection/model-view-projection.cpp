@@ -168,7 +168,7 @@ void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
                                               nullptr,
                                               nullptr,
                                               "models/teapot.obj");
-    assert(obj_load_success);
+    if(!obj_load_success) exit(1);
     for (const tinyobj::shape_t &obj_shape : obj_shapes) {
       for (const tinyobj::index_t &idx : obj_shape.mesh.indices) {
         const unsigned vidx = (unsigned)idx.vertex_index;
@@ -182,9 +182,7 @@ void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
       sizeof(float3) * vert_data.size(),
       NGF_BUFFER_STORAGE_PRIVATE
     };
-    ngf_error err = state->attr_buf.initialize(attr_info);
-    assert(err == NGF_ERROR_OK);
-
+    state->attr_buf.initialize(attr_info);
     state->dispose_queue.write_buffer(xfer_enc,
                                       state->attr_buf,
                                (void*)vert_data.data(),
@@ -252,5 +250,7 @@ void on_ui(void *userdata) {
   ImGui::End();
 }
 
-void on_shutdown(void*) {}
+void on_shutdown(void *userdata) {
+  delete (app_state*)userdata;
+}
 

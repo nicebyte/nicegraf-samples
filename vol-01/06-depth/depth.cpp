@@ -29,7 +29,7 @@ init_result on_initialized(uintptr_t native_handle,
   // Swapchain configuration:
   ngf_swapchain_info swapchain_info {
     NGF_IMAGE_FORMAT_BGRA8, // 8 bit per channel BGRA for color
-    NGF_IMAGE_FORMAT_DEPTH24_STENCIL8, // 24 bit depth, 8 bit stencil
+    NGF_IMAGE_FORMAT_UNDEFINED,// NGF_IMAGE_FORMAT_DEPTH24_STENCIL8, // 24 bit depth, 8 bit stencil
     4u, // 4x MSAA
     2u, // swapchain capacity
     initial_width,
@@ -115,7 +115,9 @@ void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
   if (!state->uniform_data_uploaded) {
     // Initialize uniform buffers.
     ngf_uniform_buffer_info ubo_info {
-      sizeof(triangle_data)
+      sizeof(triangle_data),
+      NGF_BUFFER_STORAGE_PRIVATE,
+      NGF_BUFFER_USAGE_XFER_DST
     };
     ngf_error err = NGF_ERROR_OK;
     for (uint32_t i = 0u; i < 2u; ++i) {
@@ -166,4 +168,6 @@ void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
 }
 
 void on_ui(void*) {}
-void on_shutdown(void*) {}
+void on_shutdown(void *userdata) {
+  delete (app_state*)userdata;
+}
