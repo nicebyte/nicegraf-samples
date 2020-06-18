@@ -25,10 +25,10 @@ cmake_minimum_required(VERSION 3.0.2)
 project(nicegraf-samples)
 
 if (WIN32)
-  set(COMMON_COMPILE_OPTS "/W4" "/WX" "/std:c++17")
+  set(NICEGRAF_COMMON_COMPILE_OPTS "/W4" "/WX" "/std:c++17")
   set(EXECUTABLE_SUFFIX ".exe")
 else()
-  set(COMMON_COMPILE_OPTS "--std=c++17" "-Wall" "-Wconversion" "-Werror"
+  set(NICEGRAF_COMMON_COMPILE_OPTS "--std=c++17" "-Wall" "-Wconversion" "-Werror"
         "-Wno-unknown-pragmas")
   set(EXECUTABLE_SUFFIX "")
 endif()
@@ -93,9 +93,9 @@ target_include_directories(common PUBLIC
 target_include_directories(common PRIVATE
   ${CMAKE_CURRENT_LIST_DIR}/artifacts/shaders/generated)
   
-target_compile_options(common PRIVATE ${COMMON_COMPILE_OPTS})
+target_compile_options(common PRIVATE ${NICEGRAF_COMMON_COMPILE_OPTS})
 
-target_link_libraries(common glfw imgui imgui_editor nicegraf nicegraf_util)
+target_link_libraries(common glfw imgui imgui_editor nicegraf_gl nicegraf_util)
 
 add_dependencies(common generated_shaders)
 
@@ -152,7 +152,7 @@ function (add_sample volume number name)
   add_executable(${SAMPLE}
     "${CMAKE_CURRENT_LIST_DIR}/vol-${volume}/${number}-${name}/${name}.cpp")
   target_link_libraries(${SAMPLE} common ${NGF_OPENGL_LIB})
-  target_compile_options(${SAMPLE} PRIVATE ${COMMON_COMPILE_OPTS})
+  target_compile_options(${SAMPLE} PRIVATE ${NICEGRAF_COMMON_COMPILE_OPTS})
   target_include_directories(${SAMPLE} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/third_party/tinyobjloader)
   target_include_directories(${SAMPLE} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/artifacts/shaders/generated)
   add_dependencies(${SAMPLE} generated_shaders)
