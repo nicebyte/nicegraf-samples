@@ -52,8 +52,7 @@ init_result on_initialized(uintptr_t native_handle,
   };
   ngf_context_info ctx_info = {
     &swapchain_info, // swapchain_info
-    nullptr, // shared_context (nullptr, no shared context)
-    true     // debug
+    nullptr // shared_context (nullptr, no shared context)
   };
   ngf::context nicegraf_context;
   ngf_error err = nicegraf_context.initialize(ctx_info);

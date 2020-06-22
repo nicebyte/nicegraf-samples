@@ -65,7 +65,19 @@ int ENTRYFN(int, char **) {
   glfwInit();
  
   // Initialize nicegraf.
-  ngf_error err = ngf_initialize(NGF_DEVICE_PREFERENCE_DONTCARE);
+  const ngf_init_info init_info = {
+     NGF_DEVICE_PREFERENCE_DONTCARE,
+    {
+    #ifndef NDEBUG
+      NGF_DIAGNOSTICS_VERBOSITY_DETAILED,
+    #else
+      NGF_DIAGNOSTICS_VERBOSITY_DEFAULT,
+    #endif
+      nullptr,
+      nullptr
+    }
+  };
+  ngf_error err = ngf_initialize(&init_info);
   if (err != NGF_ERROR_OK) {
     exit(1);
   }
@@ -230,12 +242,7 @@ ngf::context create_default_context(uintptr_t handle, uint32_t w, uint32_t h) {
   };
   ngf_context_info ctx_info = {
     &swapchain_info, // swapchain_info
-    nullptr, // shared_context (nullptr, no shared context)
-#if !defined(NDEBUG)
-    true     // debug
-#else
-    false
-#endif
+    nullptr // shared_context (nullptr, no shared context)
   };
   ngf::context nicegraf_context;
   ngf_error err = nicegraf_context.initialize(ctx_info);
