@@ -59,6 +59,13 @@ void on_shutdown(void *userdata);
 #define ENTRYFN main
 #endif
 
+void diagnostic_callback(ngf_diagnostic_message_type, void *, const char* fmt, ...) {
+  va_list a;
+  va_start(a, fmt);
+  vfprintf(stderr, fmt, a);
+  va_end(a);
+}
+
 // This is the "common main" for desktop apps.
 int ENTRYFN(int, char **) {
   // Initialize GLFW.
@@ -74,7 +81,7 @@ int ENTRYFN(int, char **) {
       NGF_DIAGNOSTICS_VERBOSITY_DEFAULT,
     #endif
       nullptr,
-      nullptr
+      diagnostic_callback
     }
   };
   ngf_error err = ngf_initialize(&init_info);
