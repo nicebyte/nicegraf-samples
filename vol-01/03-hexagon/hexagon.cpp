@@ -38,7 +38,7 @@ constexpr double TAU = 6.28318530718;
 
 struct app_state {
   ngf::render_target default_rt;
-  ngf::shader_stage vert_stage;
+  ngf::shader_stage blit_vert_stage;
   ngf::shader_stage frag_stage;
   ngf::graphics_pipeline pipeline;
   ngf::attrib_buffer vert_buffer_staging;
@@ -76,7 +76,7 @@ init_result on_initialized(uintptr_t native_handle,
   state->default_rt = ngf::render_target(rt);
 
   // Load shader stages.
-  state->vert_stage =
+  state->blit_vert_stage =
       load_shader_stage("hexagon", "VSMain", NGF_STAGE_VERTEX);
   state->frag_stage =
       load_shader_stage("hexagon", "PSMain", NGF_STAGE_FRAGMENT);
@@ -90,7 +90,7 @@ init_result on_initialized(uintptr_t native_handle,
   // Pipeline configuration.
   // Shader stages.
   pipe_info.nshader_stages = 2u; 
-  pipe_info.shader_stages[0] = state->vert_stage.get();
+  pipe_info.shader_stages[0] = state->blit_vert_stage.get();
   pipe_info.shader_stages[1] = state->frag_stage.get();
   pipe_info.compatible_render_target = state->default_rt.get();
   

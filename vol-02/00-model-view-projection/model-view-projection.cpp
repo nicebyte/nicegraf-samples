@@ -39,7 +39,7 @@ union uniform_data {
 
 struct app_state {
   ngf::render_target     default_render_target;
-  ngf::shader_stage      vert_stage;
+  ngf::shader_stage      blit_vert_stage;
   ngf::shader_stage      frag_stage;
   ngf::graphics_pipeline pipeline;
   float4x4               world_from_model;
@@ -87,7 +87,7 @@ init_result on_initialized(uintptr_t native_window_handle,
   state->default_render_target.reset(default_render_target);
   
   // Load shader stages.
-  state->vert_stage = load_shader_stage("mvp", "VSMain", NGF_STAGE_VERTEX);
+  state->blit_vert_stage = load_shader_stage("mvp", "VSMain", NGF_STAGE_VERTEX);
   state->frag_stage = load_shader_stage("mvp", "PSMain", NGF_STAGE_FRAGMENT);
   
   // Create the initial pipeline configuration with OpenGL-style defaults.
@@ -97,7 +97,7 @@ init_result on_initialized(uintptr_t native_window_handle,
 
   // Set up shader stages.
   pipe_info.nshader_stages = 2u;
-  pipe_info.shader_stages[0] = state->vert_stage.get();
+  pipe_info.shader_stages[0] = state->blit_vert_stage.get();
   pipe_info.shader_stages[1] = state->frag_stage.get();
   
   // Set compatible render target.
@@ -180,7 +180,8 @@ void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
     }
     ngf_attrib_buffer_info attr_info = {
       sizeof(float3) * vert_data.size(),
-      NGF_BUFFER_STORAGE_PRIVATE
+      NGF_BUFFER_STORAGE_PRIVATE,
+      NGF_BUFFER_USAGE_XFER_DST
     };
     state->attr_buf.initialize(attr_info);
     state->dispose_queue.write_buffer(xfer_enc,
@@ -221,6 +222,7 @@ void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
   ngf_cmd_bind_attrib_buffer(render_enc, state->attr_buf.get(), 0, 0);
   ngf_cmd_draw(render_enc, false, 0, state->num_elements, 1u);
   ngf_cmd_end_pass(render_enc);
+  ngf_render_encoder_end(render_enc);
   ngf_submit_cmd_buffers(1u, &b);
 }
 

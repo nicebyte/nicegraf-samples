@@ -14,7 +14,7 @@ struct triangle_data {
 
 struct app_state {
   ngf::render_target default_rt;
-  ngf::shader_stage vert_stage;
+  ngf::shader_stage blit_vert_stage;
   ngf::shader_stage frag_stage;
   ngf::graphics_pipeline pipeline;
   ngf::resource_dispose_queue discard_queue;
@@ -41,7 +41,6 @@ init_result on_initialized(uintptr_t native_handle,
   ngf_context_info ctx_info{
     &swapchain_info, // use the above swapchain configuration.
     nullptr, // no shared context
-    false // not a debug context.
   };
   ngf::context ctx;
   ngf_error err = ctx.initialize(ctx_info);
@@ -70,7 +69,7 @@ init_result on_initialized(uintptr_t native_handle,
   state->default_rt.reset(default_rt);
 
   // Load shaders.
-  state->vert_stage = load_shader_stage("depth", "VSMain", NGF_STAGE_VERTEX);
+  state->blit_vert_stage = load_shader_stage("depth", "VSMain", NGF_STAGE_VERTEX);
   state->frag_stage = load_shader_stage("depth", "PSMain", NGF_STAGE_FRAGMENT);
    
   // Initial pipeline configuration with OpenGL-style defaults.
@@ -79,7 +78,7 @@ init_result on_initialized(uintptr_t native_handle,
                                                  &pipeline_data);
   ngf_graphics_pipeline_info &pipe_info = pipeline_data.pipeline_info;
   pipe_info.nshader_stages = 2u;
-  pipe_info.shader_stages[0] = state->vert_stage.get();
+  pipe_info.shader_stages[0] = state->blit_vert_stage.get();
   pipe_info.shader_stages[1] = state->frag_stage.get();
   pipe_info.compatible_render_target = state->default_rt.get();
   

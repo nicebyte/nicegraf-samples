@@ -30,8 +30,9 @@ SOFTWARE.
 struct app_state {
   ngf::render_target default_rt;
   ngf::render_target offscreen_rt;
-  ngf::shader_stage vert_stage;
+  ngf::shader_stage blit_vert_stage;
   ngf::shader_stage blit_frag_stage;
+  ngf::shader_stage offscreen_vert_stage;
   ngf::shader_stage offscreen_frag_stage;
   ngf::graphics_pipeline blit_pipeline;
   ngf::graphics_pipeline offscreen_pipeline;
@@ -92,12 +93,14 @@ init_result on_initialized(uintptr_t native_handle,
   assert(err == NGF_ERROR_OK);
 
   // Load shader stages and pipeline metadata.
-  state->vert_stage =
+  state->blit_vert_stage =
       load_shader_stage("fullscreen-triangle", "VSMain", NGF_STAGE_VERTEX);
   state->blit_frag_stage =
       load_shader_stage("simple-texture", "PSMain", NGF_STAGE_FRAGMENT);
+  state->offscreen_vert_stage =
+      load_shader_stage("small-triangle", "VSMain", NGF_STAGE_VERTEX);
   state->offscreen_frag_stage =
-      load_shader_stage("fullscreen-triangle", "PSMain", NGF_STAGE_FRAGMENT);
+      load_shader_stage("small-triangle", "PSMain", NGF_STAGE_FRAGMENT);
   ngf_plmd *pipeline_metadata = load_pipeline_metadata("simple-texture");
 
   // Create pipeline for blit pass.
@@ -107,7 +110,7 @@ init_result on_initialized(uintptr_t native_handle,
   ngf_graphics_pipeline_info &blit_pipe_info =
       blit_pipeline_data.pipeline_info;
   blit_pipe_info.nshader_stages = 2u;
-  blit_pipe_info.shader_stages[0] = state->vert_stage.get();
+  blit_pipe_info.shader_stages[0] = state->blit_vert_stage.get();
   blit_pipe_info.shader_stages[1] = state->blit_frag_stage.get();
   blit_pipe_info.compatible_render_target = state->default_rt.get();
   blit_pipe_info.image_to_combined_map =
@@ -129,7 +132,7 @@ init_result on_initialized(uintptr_t native_handle,
   ngf_graphics_pipeline_info &offscreen_pipe_info =
       blit_pipeline_data.pipeline_info;
   offscreen_pipe_info.nshader_stages = 2u;
-  offscreen_pipe_info.shader_stages[0] = state->vert_stage.get();
+  offscreen_pipe_info.shader_stages[0] = state->offscreen_vert_stage.get();
   offscreen_pipe_info.shader_stages[1] = state->offscreen_frag_stage.get();
   offscreen_pipe_info.compatible_render_target = state->offscreen_rt.get();
   err = state->offscreen_pipeline.initialize(offscreen_pipe_info);
@@ -159,25 +162,30 @@ init_result on_initialized(uintptr_t native_handle,
 // Called every frame.
 void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
   app_state *state = (app_state*)userdata;
-  ngf_irect2d viewport { 0, 0, w, h };
+  ngf_irect2d offsc_viewport { 0, 0, 512, 512 };
+  ngf_irect2d onsc_viewport {0, 0, w, h };
   ngf_cmd_buffer cmd_buf = nullptr;
   ngf_cmd_buffer_info cmd_info;
   ngf_create_cmd_buffer(&cmd_info, &cmd_buf);
   ngf_start_cmd_buffer(cmd_buf);
+  {
   ngf::render_encoder renc { cmd_buf };
   ngf_cmd_begin_pass(renc, state->offscreen_rt);
   ngf_cmd_bind_gfx_pipeline(renc, state->offscreen_pipeline);
+  ngf_cmd_viewport(renc, &offsc_viewport);
+  ngf_cmd_scissor(renc, &offsc_viewport);
   ngf_cmd_draw(renc, false, 0u, 3u, 1u);
   ngf_cmd_end_pass(renc);
   ngf_cmd_begin_pass(renc, state->default_rt);
   ngf_cmd_bind_gfx_pipeline(renc, state->blit_pipeline);
-  ngf_cmd_viewport(renc, &viewport);
-  ngf_cmd_scissor(renc, &viewport);
+  ngf_cmd_viewport(renc, &onsc_viewport);
+  ngf_cmd_scissor(renc, &onsc_viewport);
   ngf::cmd_bind_resources(renc,
     ngf::descriptor_set<0>::binding<1>::texture(state->rt_texture.get()),
     ngf::descriptor_set<0>::binding<2>::sampler(state->sampler.get()));
   ngf_cmd_draw(renc, false, 0u, 3u, 1u);
   ngf_cmd_end_pass(renc);
+  }
   ngf_submit_cmd_buffers(1u, &cmd_buf);
   ngf_destroy_cmd_buffer(cmd_buf);
 }

@@ -85,7 +85,9 @@ init_result on_initialized(uintptr_t native_handle,
 // Called every frame.
 void on_frame(uint32_t, uint32_t, float, void *userdata) {
   app_state *state = (app_state*)userdata;
-  ngf::cmd_buffer &cmd_buf = state->cmd_buf;
+  ngf_cmd_buffer_info inf;
+  ngf::cmd_buffer cmd_buf;
+  cmd_buf.initialize(inf);
   ngf_start_cmd_buffer(cmd_buf);
   ngf_render_encoder enc;
   ngf_cmd_buffer_start_render(cmd_buf, &enc);

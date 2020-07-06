@@ -81,7 +81,8 @@ if(APPLE)
       ${CMAKE_CURRENT_LIST_DIR}/common/get_glfw_contentview.mm
       ${CMAKE_CURRENT_LIST_DIR}/common/apple_main.mm)
 else()
-  add_definitions(-DNGF_BACKEND_OPENGL)
+  #add_definitions(-DNGF_BACKEND_OPENGL)
+  add_definitions(-DNGF_BACKEND_VULKAN)
 endif()
 
 add_library(common
@@ -95,7 +96,7 @@ target_include_directories(common PRIVATE
   
 target_compile_options(common PRIVATE ${NICEGRAF_COMMON_COMPILE_OPTS})
 
-target_link_libraries(common glfw imgui imgui_editor nicegraf_gl nicegraf_util)
+target_link_libraries(common glfw imgui imgui_editor nicegraf_vk nicegraf_util)
 
 add_dependencies(common generated_shaders)
 
@@ -131,8 +132,10 @@ foreach(source_path ${shader_files})
     foreach(tech ${tech_names})
       list(APPEND output_files_list "${CMAKE_CURRENT_LIST_DIR}/artifacts/shaders/generated/${tech}.vs.430.glsl")
       list(APPEND output_files_list "${CMAKE_CURRENT_LIST_DIR}/artifacts/shaders/generated/${tech}.vs.12.msl")
+      list(APPEND output_files_list "${CMAKE_CURRENT_LIST_DIR}/artifacts/shaders/generated/${tech}.vs.spv")
       list(APPEND output_files_list "${CMAKE_CURRENT_LIST_DIR}/artifacts/shaders/generated/${tech}.ps.430.glsl")
       list(APPEND output_files_list "${CMAKE_CURRENT_LIST_DIR}/artifacts/shaders/generated/${tech}.ps.12.msl")
+      list(APPEND output_files_list "${CMAKE_CURRENT_LIST_DIR}/artifacts/shaders/generated/${tech}.ps.spv")
       list(APPEND output_files_list "${CMAKE_CURRENT_LIST_DIR}/artifacts/shaders/generated/${tech}.pipeline")
     endforeach(tech)
     get_filename_component(header_file_name ${source_path} NAME_WE)
