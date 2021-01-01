@@ -192,6 +192,7 @@ void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
   ngf_cmd_scissor(renc, &viewport);
   ngf_cmd_draw(renc, false, 0u, 3u * 6u, 1u); 
   ngf_cmd_end_pass(renc);
+  ngf_render_encoder_end(renc);
   ngf_submit_cmd_buffers(1u, &cmd_buf);
   ngf_destroy_cmd_buffer(cmd_buf);
 }

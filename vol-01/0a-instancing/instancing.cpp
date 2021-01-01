@@ -344,6 +344,7 @@ void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
   ngf_cmd_draw(renc, true, 0, 36, NUM_CUBES_H * NUM_CUBES_V);
 
   ngf_cmd_end_pass(renc);
+  ngf_render_encoder_end(renc);
   ngf_submit_cmd_buffers(1u, &b);
 }
 

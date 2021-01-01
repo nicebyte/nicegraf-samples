@@ -52,11 +52,7 @@ ngf_imgui::ngf_imgui() {
   // Set up depth & stencil state.
   pipeline_data.depth_stencil_info.depth_test = false;
   pipeline_data.depth_stencil_info.stencil_test = false;
-
-  // Make viewport and scissor dynamic.
-  pipeline_data.pipeline_info.dynamic_state_mask =
-    NGF_DYNAMIC_STATE_SCISSOR | NGF_DYNAMIC_STATE_VIEWPORT;
-  
+ 
   // Assign programmable stages.
   ngf_graphics_pipeline_info &pipeline_info = pipeline_data.pipeline_info;
   pipeline_info.nshader_stages = 2u;
@@ -209,6 +205,7 @@ void ngf_imgui::record_rendering_commands(ngf_render_encoder enc) {
     (uint32_t)fb_width, (uint32_t)fb_height
   };
   ngf_cmd_viewport(enc, &viewport_rect);
+  ngf_cmd_scissor(enc, &viewport_rect);
 
   // These vectors will store vertex and index data for the draw calls.
   // Later this data will be transferred to GPU buffers.
@@ -305,10 +302,10 @@ void ngf_imgui::record_rendering_commands(ngf_render_encoder enc) {
   ngf_index_buffer_flush_range(index_buffer, 0, index_buffer_info.size);
   ngf_index_buffer_unmap(index_buffer);
 
-  ngf_cmd_bind_index_buffer(enc, index_buffer_,
+  ngf_cmd_bind_index_buffer(enc, index_buffer,
                             sizeof(ImDrawIdx) < 4
                                 ? NGF_TYPE_UINT16 : NGF_TYPE_UINT32);
-  ngf_cmd_bind_attrib_buffer(enc, attrib_buffer_, 0u, 0u);
+  ngf_cmd_bind_attrib_buffer(enc, attrib_buffer, 0u, 0u);
   for (const auto &draw : draw_data) {
     ngf_cmd_scissor(enc, &draw.scissor);
     ngf_cmd_draw(enc, true, draw.first_elem, draw.nelem, 1u);

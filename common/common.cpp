@@ -59,10 +59,13 @@ void on_shutdown(void *userdata);
 #define ENTRYFN main
 #endif
 
-void diagnostic_callback(ngf_diagnostic_message_type, void *, const char* fmt, ...) {
+void diagnostic_callback(ngf_diagnostic_message_type type, void *, const char* fmt, ...) {
   va_list a;
   va_start(a, fmt);
-  vfprintf(stderr, fmt, a);
+  if (type >= NGF_DIAGNOSTIC_ERROR) {
+    vfprintf(stderr, fmt, a);
+    fprintf(stderr, "\n");
+  }
   va_end(a);
 }
 
@@ -131,14 +134,14 @@ int ENTRYFN(int, char **) {
 
   // Obtain the default render target.
   ngf_render_target defaultrt = nullptr;
-  ngf_default_render_target(NGF_LOAD_OP_DONTCARE,
+  ngf_default_render_target(NGF_LOAD_OP_KEEP,
                             NGF_LOAD_OP_DONTCARE,
                             NGF_STORE_OP_STORE,
                             NGF_STORE_OP_DONTCARE,
                             NULL,
                             NULL,
                             &defaultrt);
-  int old_win_width = 0, old_win_height = 0;
+  int old_win_width = 1024, old_win_height = 768;
   bool imgui_font_uploaded = false;
   while (!glfwWindowShouldClose(win)) { // Main loop.
     glfwPollEvents(); // Get input events.
@@ -174,10 +177,12 @@ int ENTRYFN(int, char **) {
         ui.upload_font_texture(uibuf);
         imgui_font_uploaded = true;
       }
-      ngf::render_encoder enc { uibuf };
-      ngf_cmd_begin_pass(enc, defaultrt);
-      ui.record_rendering_commands(enc);
-      ngf_cmd_end_pass(enc);
+      {
+        ngf::render_encoder enc { uibuf };
+        ngf_cmd_begin_pass(enc, defaultrt);
+        ui.record_rendering_commands(enc);
+        ngf_cmd_end_pass(enc);
+      }
       ngf_cmd_buffer b = uibuf.get();
       ngf_submit_cmd_buffers(1u, &b);
 #endif

@@ -83,16 +83,17 @@ init_result on_initialized(uintptr_t native_handle,
 }
 
 // Called every frame.
-void on_frame(uint32_t, uint32_t, float, void *userdata) {
+void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
   app_state *state = (app_state*)userdata;
-  ngf_cmd_buffer_info inf;
-  ngf::cmd_buffer cmd_buf;
-  cmd_buf.initialize(inf);
+  ngf::cmd_buffer &cmd_buf = state->cmd_buf;
   ngf_start_cmd_buffer(cmd_buf);
   ngf_render_encoder enc;
   ngf_cmd_buffer_start_render(cmd_buf, &enc);
   ngf_cmd_begin_pass(enc, state->default_rt);
+  const ngf_irect2d viewport_rect {0, 0, w, h};
+  ngf_cmd_viewport(enc, &viewport_rect);
   ngf_cmd_end_pass(enc);
+  ngf_render_encoder_end(enc);
   ngf_cmd_buffer b = cmd_buf.get();
   ngf_submit_cmd_buffers(1u, &b);
 }

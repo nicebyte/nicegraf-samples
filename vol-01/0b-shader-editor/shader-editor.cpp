@@ -118,6 +118,7 @@ void on_frame(uint32_t w, uint32_t h, float time, void *userdata) {
     ngf_cmd_draw(renc, false, 0, 3, 1);
   }
   ngf_cmd_end_pass(renc);
+  ngf_render_encoder_end(renc);
   ngf_submit_cmd_buffers(1u, &b);
 }
 

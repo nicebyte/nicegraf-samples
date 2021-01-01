@@ -248,6 +248,7 @@ void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
   draw_textured_quad(state->ubo, 2, state->trilinear_sampler, renc);
   draw_textured_quad(state->ubo, 3, state->aniso_sampler, renc);
   ngf_cmd_end_pass(renc);
+  ngf_render_encoder_end(renc);
   ngf_submit_cmd_buffers(1u, &cmd_buf);
   ngf_destroy_cmd_buffer(cmd_buf);
 }
