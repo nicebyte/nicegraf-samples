@@ -184,15 +184,16 @@ void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
                                sizeof(vertices), 0u, 0u);
     state->vert_buffer_uploaded = true;
   }
-  ngf::render_encoder renc { cmd_buf };
-  ngf_cmd_begin_pass(renc, state->default_rt);
-  ngf_cmd_bind_gfx_pipeline(renc, state->pipeline);
-  ngf_cmd_bind_attrib_buffer(renc, state->vert_buffer, 0u, 0u);
-  ngf_cmd_viewport(renc, &viewport);
-  ngf_cmd_scissor(renc, &viewport);
-  ngf_cmd_draw(renc, false, 0u, 3u * 6u, 1u); 
-  ngf_cmd_end_pass(renc);
-  ngf_render_encoder_end(renc);
+  {
+    ngf::render_encoder renc{ cmd_buf };
+    ngf_cmd_begin_pass(renc, state->default_rt);
+    ngf_cmd_bind_gfx_pipeline(renc, state->pipeline);
+    ngf_cmd_bind_attrib_buffer(renc, state->vert_buffer, 0u, 0u);
+    ngf_cmd_viewport(renc, &viewport);
+    ngf_cmd_scissor(renc, &viewport);
+    ngf_cmd_draw(renc, false, 0u, 3u * 6u, 1u);
+    ngf_cmd_end_pass(renc);
+  }
   ngf_submit_cmd_buffers(1u, &cmd_buf);
   ngf_destroy_cmd_buffer(cmd_buf);
 }

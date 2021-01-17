@@ -109,17 +109,18 @@ void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
   ngf_cmd_buffer_info cmd_info;
   ngf_create_cmd_buffer(&cmd_info, &cmd_buf);
   ngf_start_cmd_buffer(cmd_buf);
-  ngf::render_encoder enc { cmd_buf };
-  ngf_cmd_begin_pass(enc, state->default_rt);
-  ngf_cmd_bind_gfx_pipeline(enc, state->pipelines[pipe]);
-  // Switch between pipelines every 120 frames.
-  frame = (frame + 1u) % 120u;
-  if (frame == 0u) pipe = (pipe + 1u) % 2u;
-  ngf_cmd_viewport(enc, &viewport);
-  ngf_cmd_scissor(enc, &viewport);
-  ngf_cmd_draw(enc, false, 0u, 3u, 1u); 
-  ngf_cmd_end_pass(enc);
-  ngf_render_encoder_end(enc);
+  {
+    ngf::render_encoder enc{ cmd_buf };
+    ngf_cmd_begin_pass(enc, state->default_rt);
+    ngf_cmd_bind_gfx_pipeline(enc, state->pipelines[pipe]);
+    // Switch between pipelines every 120 frames.
+    frame = (frame + 1u) % 120u;
+    if (frame == 0u) pipe = (pipe + 1u) % 2u;
+    ngf_cmd_viewport(enc, &viewport);
+    ngf_cmd_scissor(enc, &viewport);
+    ngf_cmd_draw(enc, false, 0u, 3u, 1u);
+    ngf_cmd_end_pass(enc);
+  }
   ngf_submit_cmd_buffers(1u, &cmd_buf);
   ngf_destroy_cmd_buffer(cmd_buf);
 }

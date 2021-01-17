@@ -178,18 +178,19 @@ void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
     ngf_cmd_write_image(xfenc, state->pbuffer, 0, img_ref, &offset, &extent);
     state->pixel_data_uploaded = true;
   }
-  ngf::render_encoder renc { cmd_buf };
-  ngf_cmd_begin_pass(renc, state->default_rt);
-  ngf_cmd_bind_gfx_pipeline(renc, state->pipeline);
-  ngf_cmd_viewport(renc, &viewport);
-  ngf_cmd_scissor(renc, &viewport);
-  ngf::cmd_bind_resources(
-    renc,
-    ngf::descriptor_set<0>::binding<1>::texture(state->image.get()),
-    ngf::descriptor_set<0>::binding<2>::sampler(state->sampler.get()));
-  ngf_cmd_draw(renc, false, 0u, 3u, 1u); 
-  ngf_cmd_end_pass(renc);
-  ngf_render_encoder_end(renc);
+  {
+    ngf::render_encoder renc{ cmd_buf };
+    ngf_cmd_begin_pass(renc, state->default_rt);
+    ngf_cmd_bind_gfx_pipeline(renc, state->pipeline);
+    ngf_cmd_viewport(renc, &viewport);
+    ngf_cmd_scissor(renc, &viewport);
+    ngf::cmd_bind_resources(
+      renc,
+      ngf::descriptor_set<0>::binding<1>::texture(state->image.get()),
+      ngf::descriptor_set<0>::binding<2>::sampler(state->sampler.get()));
+    ngf_cmd_draw(renc, false, 0u, 3u, 1u);
+    ngf_cmd_end_pass(renc);
+  }
   ngf_submit_cmd_buffers(1u, &cmd_buf);
   ngf_destroy_cmd_buffer(cmd_buf);
 }

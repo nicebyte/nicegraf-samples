@@ -208,21 +208,22 @@ void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
       state->clip_from_view * state->view_from_world * state->world_from_model
   };
   state->uniform_buffer.write(final_transform);
-  ngf::render_encoder render_enc { b };
-  ngf_cmd_begin_pass(render_enc, state->default_render_target.get());
-  ngf_cmd_bind_gfx_pipeline(render_enc, state->pipeline.get());
-  ngf::cmd_bind_resources(
-    render_enc,
-    state->uniform_buffer.bind_op_at_current_offset(0, 0));
-  const ngf_irect2d viewport_rect{
-    0, 0, w, h
-  };
-  ngf_cmd_viewport(render_enc, &viewport_rect);
-  ngf_cmd_scissor(render_enc, &viewport_rect);
-  ngf_cmd_bind_attrib_buffer(render_enc, state->attr_buf.get(), 0, 0);
-  ngf_cmd_draw(render_enc, false, 0, state->num_elements, 1u);
-  ngf_cmd_end_pass(render_enc);
-  ngf_render_encoder_end(render_enc);
+  {
+    ngf::render_encoder render_enc{ b };
+    ngf_cmd_begin_pass(render_enc, state->default_render_target.get());
+    ngf_cmd_bind_gfx_pipeline(render_enc, state->pipeline.get());
+    ngf::cmd_bind_resources(
+      render_enc,
+      state->uniform_buffer.bind_op_at_current_offset(0, 0));
+    const ngf_irect2d viewport_rect{
+      0, 0, w, h
+    };
+    ngf_cmd_viewport(render_enc, &viewport_rect);
+    ngf_cmd_scissor(render_enc, &viewport_rect);
+    ngf_cmd_bind_attrib_buffer(render_enc, state->attr_buf.get(), 0, 0);
+    ngf_cmd_draw(render_enc, false, 0, state->num_elements, 1u);
+    ngf_cmd_end_pass(render_enc);
+  }
   ngf_submit_cmd_buffers(1u, &b);
 }
 

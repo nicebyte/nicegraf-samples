@@ -144,25 +144,26 @@ void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
     assert(err == NGF_ERROR_OK);
     state->uniform_data_uploaded = true;
   }
-  ngf::render_encoder renc { cmd_buf };
-  ngf_cmd_begin_pass(renc, state->default_rt);
-  ngf_cmd_bind_gfx_pipeline(renc, state->pipeline);
-  ngf_cmd_viewport(renc, &viewport);
-  ngf_cmd_scissor(renc, &viewport);
+  {
+    ngf::render_encoder renc{ cmd_buf };
+    ngf_cmd_begin_pass(renc, state->default_rt);
+    ngf_cmd_bind_gfx_pipeline(renc, state->pipeline);
+    ngf_cmd_viewport(renc, &viewport);
+    ngf_cmd_scissor(renc, &viewport);
 
-  for (uint32_t i = 0u; i < 2u; ++i) {
-    ngf_resource_bind_op bind_op;
-    bind_op.type = NGF_DESCRIPTOR_UNIFORM_BUFFER;
-    bind_op.target_set = 0u;
-    bind_op.target_binding = 0u;
-    bind_op.info.uniform_buffer.buffer = state->uniform_data[i].get();
-    bind_op.info.uniform_buffer.offset = 0u;
-    bind_op.info.uniform_buffer.range = sizeof(triangle_data);
-    ngf_cmd_bind_gfx_resources(renc, &bind_op, 1u);
-    ngf_cmd_draw(renc, false, 0u, 3u, 1u); 
+    for (uint32_t i = 0u; i < 2u; ++i) {
+      ngf_resource_bind_op bind_op;
+      bind_op.type = NGF_DESCRIPTOR_UNIFORM_BUFFER;
+      bind_op.target_set = 0u;
+      bind_op.target_binding = 0u;
+      bind_op.info.uniform_buffer.buffer = state->uniform_data[i].get();
+      bind_op.info.uniform_buffer.offset = 0u;
+      bind_op.info.uniform_buffer.range = sizeof(triangle_data);
+      ngf_cmd_bind_gfx_resources(renc, &bind_op, 1u);
+      ngf_cmd_draw(renc, false, 0u, 3u, 1u);
+    }
+    ngf_cmd_end_pass(renc);
   }
-  ngf_cmd_end_pass(renc);
-  ngf_render_encoder_end(renc);
   ngf_submit_cmd_buffers(1u, &cmd_buf);
   ngf_destroy_cmd_buffer(cmd_buf);
 }

@@ -235,20 +235,21 @@ void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
     }
     state->textures_uploaded = true;
   }
-  ngf::render_encoder renc { cmd_buf };
-  ngf_cmd_begin_pass(renc, state->default_rt);
-  ngf_cmd_bind_gfx_pipeline(renc, state->pipeline);
-  ngf_cmd_viewport(renc, &viewport);
-  ngf_cmd_scissor(renc, &viewport);
-  ngf::cmd_bind_resources(
+  {
+    ngf::render_encoder renc{ cmd_buf };
+    ngf_cmd_begin_pass(renc, state->default_rt);
+    ngf_cmd_bind_gfx_pipeline(renc, state->pipeline);
+    ngf_cmd_viewport(renc, &viewport);
+    ngf_cmd_scissor(renc, &viewport);
+    ngf::cmd_bind_resources(
       renc,
       ngf::descriptor_set<0>::binding<0>::texture(state->image));
-  draw_textured_quad(state->ubo, 0, state->nearest_sampler, renc);
-  draw_textured_quad(state->ubo, 1, state->bilinear_sampler, renc);
-  draw_textured_quad(state->ubo, 2, state->trilinear_sampler, renc);
-  draw_textured_quad(state->ubo, 3, state->aniso_sampler, renc);
-  ngf_cmd_end_pass(renc);
-  ngf_render_encoder_end(renc);
+    draw_textured_quad(state->ubo, 0, state->nearest_sampler, renc);
+    draw_textured_quad(state->ubo, 1, state->bilinear_sampler, renc);
+    draw_textured_quad(state->ubo, 2, state->trilinear_sampler, renc);
+    draw_textured_quad(state->ubo, 3, state->aniso_sampler, renc);
+    ngf_cmd_end_pass(renc);
+  }
   ngf_submit_cmd_buffers(1u, &cmd_buf);
   ngf_destroy_cmd_buffer(cmd_buf);
 }

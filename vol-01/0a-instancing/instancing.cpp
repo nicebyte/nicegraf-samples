@@ -314,7 +314,8 @@ void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
     assert(err == NGF_ERROR_OK);
     state->resources_uploaded = true;
   }
-  ngf::render_encoder renc { b };
+  {
+  ngf::render_encoder renc{ b };
   ngf_cmd_begin_pass(renc, state->default_render_target.get());
   ngf_cmd_bind_gfx_pipeline(renc, state->pipeline.get());
 
@@ -341,10 +342,10 @@ void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
   ngf_cmd_scissor(renc, &viewport_rect);
   ngf_cmd_bind_attrib_buffer(renc, state->attr_buf.get(), 0, 0);
   ngf_cmd_bind_index_buffer(renc, state->idx_buf.get(), NGF_TYPE_UINT16);
-  ngf_cmd_draw(renc, true, 0, 36, NUM_CUBES_H * NUM_CUBES_V);
+  ngf_cmd_draw(renc, true, 0, 36, NUM_CUBES_H* NUM_CUBES_V);
 
   ngf_cmd_end_pass(renc);
-  ngf_render_encoder_end(renc);
+  }
   ngf_submit_cmd_buffers(1u, &b);
 }
 
