@@ -247,11 +247,13 @@ void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
     };
     ngf_attrib_buffer_info attr_info = {
       sizeof(cube_vert_attribs),
-      NGF_BUFFER_STORAGE_PRIVATE
+      NGF_BUFFER_STORAGE_PRIVATE,
+      NGF_BUFFER_USAGE_XFER_DST
     };
     ngf_index_buffer_info index_info = {
       sizeof(cube_indices),
-      NGF_BUFFER_STORAGE_PRIVATE
+      NGF_BUFFER_STORAGE_PRIVATE,
+      NGF_BUFFER_USAGE_XFER_DST
     };
     ngf_error err = state->attr_buf.initialize(attr_info);
     assert(err == NGF_ERROR_OK);
@@ -274,7 +276,7 @@ void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
         0);
     // Create a uniform buffer.
     const ngf_uniform_buffer_info world_to_clip_ub_info =
-        { sizeof(float4x4) };
+        { sizeof(float4x4), NGF_BUFFER_STORAGE_PRIVATE, NGF_BUFFER_USAGE_XFER_DST };
     err = state->world_to_clip_ub.initialize(world_to_clip_ub_info);
     assert(err == NGF_ERROR_OK);
 
