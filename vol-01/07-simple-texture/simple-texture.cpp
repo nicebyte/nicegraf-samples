@@ -106,7 +106,7 @@ init_result on_initialized(uintptr_t native_handle,
     1u,
     NGF_IMAGE_FORMAT_RGBA8,
     0u,
-    NGF_IMAGE_USAGE_SAMPLE_FROM
+    NGF_IMAGE_USAGE_SAMPLE_FROM | NGF_IMAGE_USAGE_XFER_DST
   };
   err = state->image.initialize(img_info);
   assert(err == NGF_ERROR_OK);
