@@ -98,7 +98,8 @@ ngf_imgui::ngf_imgui() {
     1u, // nmips
     NGF_IMAGE_FORMAT_RGBA8, // image_format
     0u, // nsamples
-    NGF_IMAGE_USAGE_SAMPLE_FROM // usage_hint
+    NGF_IMAGE_USAGE_SAMPLE_FROM  |
+    NGF_IMAGE_USAGE_XFER_DST // usage_hint
   };
   err = font_texture_.initialize(font_texture_info);
   assert(err == NGF_ERROR_OK);
