@@ -191,7 +191,7 @@ init_result on_initialized(uintptr_t native_handle,
 }
 
 // Called every frame.
-void on_frame(uint32_t w, uint32_t h, float time, void *userdata) {
+void on_frame(uint32_t w, uint32_t h, float time, void *userdata, ngf_frame_token frame_token) {
   app_state *state = (app_state*)userdata;
   state->udata.time = time;
   state->udata.aspect_ratio = (float)w / (float)h;
@@ -200,7 +200,7 @@ void on_frame(uint32_t w, uint32_t h, float time, void *userdata) {
   ngf_cmd_buffer cmd_buf = nullptr;
   ngf_cmd_buffer_info cmd_info;
   ngf_create_cmd_buffer(&cmd_info, &cmd_buf);
-  ngf_start_cmd_buffer(cmd_buf);
+  ngf_start_cmd_buffer(cmd_buf, frame_token);
   {
     ngf::render_encoder renc{ cmd_buf };
     ngf_cmd_begin_pass(renc, state->default_rt);

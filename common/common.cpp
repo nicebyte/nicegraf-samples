@@ -49,7 +49,7 @@ void debugmsg_cb(const char *msg, const void*) {
 }
 
 init_result on_initialized(uintptr_t handle, uint32_t w, uint32_t h);
-void on_frame(uint32_t w, uint32_t h, float time, void *userdata);
+void on_frame(uint32_t w, uint32_t h, float time, void *userdata, ngf_frame_token frame_token);
 void on_ui(void *userdata);
 void on_shutdown(void *userdata);
 
@@ -156,11 +156,12 @@ int ENTRYFN(int, char **) {
                          (uint32_t)new_win_height);
     }
     
-    if (ngf_begin_frame() == NGF_ERROR_OK) {
+    ngf_frame_token frame_token;
+    if (ngf_begin_frame(&frame_token) == NGF_ERROR_OK) {
       // Notify application.
       on_frame((uint32_t)old_win_width, (uint32_t)old_win_height,
                 (float)glfwGetTime(),
-                init_data.userdata);
+                init_data.userdata, frame_token);
 #if !defined(NGF_NO_IMGUI)
       // Give application a chance to submit its UI drawing commands.
       // TODO: make toggleable.
@@ -172,7 +173,7 @@ int ENTRYFN(int, char **) {
       // TODO: draw debug console window.
 
       // Draw the UI.
-      ngf_start_cmd_buffer(uibuf);
+      ngf_start_cmd_buffer(uibuf, frame_token);
       if (!imgui_font_uploaded) {
         ui.upload_font_texture(uibuf);
         imgui_font_uploaded = true;
@@ -187,7 +188,7 @@ int ENTRYFN(int, char **) {
       ngf_submit_cmd_buffers(1u, &b);
 #endif
       // End frame.
-      ngf_end_frame();
+      ngf_end_frame(frame_token);
     }
   }
   ngf_destroy_render_target(defaultrt);

@@ -128,7 +128,8 @@ init_result on_initialized(uintptr_t native_handle,
     11u,
     NGF_IMAGE_FORMAT_SRGBA8,
     0u,
-    NGF_IMAGE_USAGE_SAMPLE_FROM
+    NGF_IMAGE_USAGE_SAMPLE_FROM |
+    NGF_IMAGE_USAGE_XFER_DST
   };
   err = state->image.initialize(img_info);
   assert(err == NGF_ERROR_OK);
@@ -187,7 +188,7 @@ void draw_textured_quad(const ngf::streamed_uniform<uniform_data> &ubo,
 }
 
 // Called every frame.
-void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
+void on_frame(uint32_t w, uint32_t h, float, void *userdata, ngf_frame_token frame_token) {
   static uint32_t old_w = 0u, old_h = 0u;
   app_state *state = (app_state*)userdata;
   if (old_w != w || old_h != h) {
@@ -213,7 +214,7 @@ void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
   ngf_cmd_buffer cmd_buf = nullptr;
   ngf_cmd_buffer_info cmd_info;
   ngf_create_cmd_buffer(&cmd_info, &cmd_buf);
-  ngf_start_cmd_buffer(cmd_buf);
+  ngf_start_cmd_buffer(cmd_buf, frame_token);
   if (!state->textures_uploaded) {
     char file_name[] = "textures/TILES00.DATA";
     uint32_t tw = 1024u, th = 1024u;

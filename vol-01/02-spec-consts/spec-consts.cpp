@@ -100,7 +100,7 @@ init_result on_initialized(uintptr_t native_handle,
 }
 
 // Called every frame.
-void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
+void on_frame(uint32_t w, uint32_t h, float, void *userdata, ngf_frame_token frame_token) {
   static uint32_t frame = 1u;
   static uint32_t pipe = 0u;
   app_state *state = (app_state*)userdata;
@@ -108,7 +108,7 @@ void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
   ngf_cmd_buffer cmd_buf = nullptr;
   ngf_cmd_buffer_info cmd_info;
   ngf_create_cmd_buffer(&cmd_info, &cmd_buf);
-  ngf_start_cmd_buffer(cmd_buf);
+  ngf_start_cmd_buffer(cmd_buf, frame_token);
   {
     ngf::render_encoder enc{ cmd_buf };
     ngf_cmd_begin_pass(enc, state->default_rt);

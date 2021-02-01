@@ -152,11 +152,11 @@ init_result on_initialized(uintptr_t native_window_handle,
   return { std::move(ctx), state };
 }
 
-void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
+void on_frame(uint32_t w, uint32_t h, float, void *userdata, ngf_frame_token frame_token) {
   app_state      *state = (app_state*)userdata;
   ngf_cmd_buffer  b     = state->cmdbuf.get();
 
-  ngf_start_cmd_buffer(b);
+  ngf_start_cmd_buffer(b, frame_token);
   if (!state->buffers_uploaded) {
     ngf::xfer_encoder xfer_enc { b };
     tinyobj::attrib_t obj_attribs;
