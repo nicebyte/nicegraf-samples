@@ -44,7 +44,7 @@ init_result on_initialized(uintptr_t native_handle,
   ngf_swapchain_info swapchain_info = {
     NGF_IMAGE_FORMAT_BGRA8, // color format
     NGF_IMAGE_FORMAT_UNDEFINED, // depth format (none)
-    0, // number of MSAA samples (0, non-multisampled)
+    NGF_SAMPLE_COUNT_8, // number of MSAA samples
     2u, // swapchain capacity hint
     initial_width, // swapchain image width
     initial_height, // swapchain image height
@@ -83,10 +83,10 @@ init_result on_initialized(uintptr_t native_handle,
 }
 
 // Called every frame.
-void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
+void on_frame(uint32_t w, uint32_t h, float, void *userdata, ngf_frame_token frame_token) {
   app_state *state = (app_state*)userdata;
   ngf::cmd_buffer &cmd_buf = state->cmd_buf;
-  ngf_start_cmd_buffer(cmd_buf);
+  ngf_start_cmd_buffer(cmd_buf, frame_token);
   ngf_render_encoder enc;
   ngf_cmd_buffer_start_render(cmd_buf, &enc);
   ngf_cmd_begin_pass(enc, state->default_rt);

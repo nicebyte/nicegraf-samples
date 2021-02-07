@@ -87,6 +87,7 @@ init_result on_initialized(uintptr_t native_handle,
       ngf_plmd_get_image_to_cis_map(pipeline_metadata);
   pipe_info.sampler_to_combined_map =
       ngf_plmd_get_sampler_to_cis_map(pipeline_metadata);
+  pipeline_data.multisample_info.sample_count = NGF_SAMPLE_COUNT_8;
 
   // Create a pipeline layout from the loaded metadata.
   err = ngf_util_create_pipeline_layout_from_metadata(
@@ -105,7 +106,7 @@ init_result on_initialized(uintptr_t native_handle,
     img_size,
     1u,
     NGF_IMAGE_FORMAT_RGBA8,
-    0u,
+    NGF_SAMPLE_COUNT_1,
     NGF_IMAGE_USAGE_SAMPLE_FROM | NGF_IMAGE_USAGE_XFER_DST
   };
   err = state->image.initialize(img_info);

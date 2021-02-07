@@ -63,7 +63,7 @@ init_result on_initialized(uintptr_t native_handle,
     img_size,
     1u,
     NGF_IMAGE_FORMAT_BGRA8,
-    0u,
+    NGF_SAMPLE_COUNT_1,
     NGF_IMAGE_USAGE_SAMPLE_FROM | NGF_IMAGE_USAGE_ATTACHMENT
   };
   ngf_error err = state->rt_texture.initialize(img_info);
@@ -107,6 +107,7 @@ init_result on_initialized(uintptr_t native_handle,
   ngf_util_graphics_pipeline_data blit_pipeline_data;
   ngf_util_create_default_graphics_pipeline_data(nullptr,
                                                  &blit_pipeline_data);
+  blit_pipeline_data.multisample_info.sample_count = NGF_SAMPLE_COUNT_8;
   ngf_graphics_pipeline_info &blit_pipe_info =
       blit_pipeline_data.pipeline_info;
   blit_pipe_info.nshader_stages = 2u;
@@ -130,7 +131,7 @@ init_result on_initialized(uintptr_t native_handle,
   ngf_util_create_default_graphics_pipeline_data(nullptr,
                                                  &offscreen_pipeline_data);
   ngf_graphics_pipeline_info &offscreen_pipe_info =
-      blit_pipeline_data.pipeline_info;
+      offscreen_pipeline_data.pipeline_info;
   offscreen_pipe_info.nshader_stages = 2u;
   offscreen_pipe_info.shader_stages[0] = state->offscreen_vert_stage.get();
   offscreen_pipe_info.shader_stages[1] = state->offscreen_frag_stage.get();

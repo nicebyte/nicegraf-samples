@@ -87,6 +87,7 @@ init_result on_initialized(uintptr_t native_handle,
   pipe_info.nshader_stages = 2u;
   pipe_info.shader_stages[0] = state->blit_vert_stage.get();
   pipe_info.shader_stages[1] = state->frag_stage.get();
+  pipeline_data.multisample_info.sample_count = NGF_SAMPLE_COUNT_8;
   err = state->pipelines[0].initialize(pipe_info);
   assert(err == NGF_ERROR_OK);
 

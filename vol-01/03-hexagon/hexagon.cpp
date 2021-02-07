@@ -113,7 +113,7 @@ init_result on_initialized(uintptr_t native_handle,
   vert_info.vert_buf_bindings = &binding;
   
   // Enable multisampling for anti-aliasing.
-  pipeline_data.multisample_info.multisample = true;
+  pipeline_data.multisample_info.sample_count = NGF_SAMPLE_COUNT_8;
   // Done configuring, initialize the pipeline.
   err = state->pipeline.initialize(pipe_info);
   assert(err == NGF_ERROR_OK);

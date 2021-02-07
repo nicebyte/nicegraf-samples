@@ -43,7 +43,7 @@ init_result on_initialized(uintptr_t native_handle,
   ngf_swapchain_info swapchain_info = {
     NGF_IMAGE_FORMAT_BGRA8, // color format
     NGF_IMAGE_FORMAT_UNDEFINED, // depth format (none)
-    0, // number of MSAA samples (0, non-multisampled)
+    NGF_SAMPLE_COUNT_1, // number of MSAA samples.
     3u, // swapchain capacity hint
     initial_width, // swapchain image width
     initial_height, // swapchain image height

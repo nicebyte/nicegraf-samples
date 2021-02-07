@@ -116,7 +116,7 @@ init_result on_initialized(uintptr_t native_handle,
   binding.stride = sizeof(vertex_data);
   vert_info.vert_buf_bindings = &binding;
   // Enable multisampling for anti-aliasing.
-  pipeline_data.multisample_info.multisample = true;
+  pipeline_data.multisample_info.sample_count = NGF_SAMPLE_COUNT_8;
   // Configure a simple pipeline layout (1 set 2 descriptors).
   ngf_descriptor_info descs[1] {
     {NGF_DESCRIPTOR_UNIFORM_BUFFER, 0u, NGF_DESCRIPTOR_VERTEX_STAGE_BIT},

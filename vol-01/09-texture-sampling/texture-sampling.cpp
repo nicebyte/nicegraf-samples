@@ -99,6 +99,7 @@ init_result on_initialized(uintptr_t native_handle,
   ngf_util_graphics_pipeline_data pipeline_data;
   ngf_util_create_default_graphics_pipeline_data(nullptr,
                                                  &pipeline_data);
+  pipeline_data.multisample_info.sample_count = NGF_SAMPLE_COUNT_8;
   ngf_graphics_pipeline_info &pipe_info = pipeline_data.pipeline_info;
   pipe_info.nshader_stages = 2u;
   pipe_info.shader_stages[0] = state->blit_vert_stage.get();
@@ -127,7 +128,7 @@ init_result on_initialized(uintptr_t native_handle,
     img_size,
     11u,
     NGF_IMAGE_FORMAT_SRGBA8,
-    0u,
+    NGF_SAMPLE_COUNT_1,
     NGF_IMAGE_USAGE_SAMPLE_FROM |
     NGF_IMAGE_USAGE_XFER_DST
   };

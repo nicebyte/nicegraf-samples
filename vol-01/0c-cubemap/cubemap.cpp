@@ -94,6 +94,7 @@ init_result on_initialized(uintptr_t native_handle,
   ngf_util_graphics_pipeline_data pipeline_data;
   ngf_util_create_default_graphics_pipeline_data(nullptr,
                                                  &pipeline_data);
+  pipeline_data.multisample_info.sample_count = NGF_SAMPLE_COUNT_8;
   ngf_graphics_pipeline_info &pipe_info = pipeline_data.pipeline_info;
   pipe_info.nshader_stages = 2u;
   pipe_info.shader_stages[0] = state->blit_vert_stage.get();
@@ -121,8 +122,8 @@ init_result on_initialized(uintptr_t native_handle,
     img_size,
     1u,
     NGF_IMAGE_FORMAT_RGBA8,
-    0u,
-    NGF_IMAGE_USAGE_SAMPLE_FROM
+    NGF_SAMPLE_COUNT_1,
+    NGF_IMAGE_USAGE_SAMPLE_FROM | NGF_IMAGE_USAGE_XFER_DST
   };
   err = state->image.initialize(img_info);
   assert(err == NGF_ERROR_OK);
@@ -161,13 +162,13 @@ init_result on_initialized(uintptr_t native_handle,
 }
 
 // Called every frame.
-void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
+void on_frame(uint32_t w, uint32_t h, float, void *userdata, ngf_frame_token frame_token) {
   app_state *state = (app_state*)userdata;
   ngf_irect2d viewport { 0, 0, w, h };
   ngf_cmd_buffer cmd_buf = nullptr;
   ngf_cmd_buffer_info cmd_info;
   ngf_create_cmd_buffer(&cmd_info, &cmd_buf);
-  ngf_start_cmd_buffer(cmd_buf);
+  ngf_start_cmd_buffer(cmd_buf, frame_token);
   if (state->pixel_data_uploaded && state->pbuffer.get() != nullptr) {
     state->pbuffer.reset(nullptr);
   } else if (!state->pixel_data_uploaded) {

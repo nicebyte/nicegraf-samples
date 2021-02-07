@@ -108,7 +108,7 @@ init_result on_initialized(uintptr_t native_window_handle,
   pipeline_data.depth_stencil_info.depth_write = true;
 
   // Set up multisampling.
-  pipeline_data.multisample_info.multisample = true;
+  pipeline_data.multisample_info.sample_count = NGF_SAMPLE_COUNT_8;
   pipeline_data.multisample_info.alpha_to_coverage = false;
 
   // Set up pipeline's vertex input.

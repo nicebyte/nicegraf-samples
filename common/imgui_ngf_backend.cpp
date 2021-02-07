@@ -52,6 +52,9 @@ ngf_imgui::ngf_imgui() {
   // Set up depth & stencil state.
   pipeline_data.depth_stencil_info.depth_test = false;
   pipeline_data.depth_stencil_info.stencil_test = false;
+
+  // Set up multisampling.
+  pipeline_data.multisample_info.sample_count = NGF_SAMPLE_COUNT_8;
  
   // Assign programmable stages.
   ngf_graphics_pipeline_info &pipeline_info = pipeline_data.pipeline_info;
@@ -97,7 +100,7 @@ ngf_imgui::ngf_imgui() {
     {(uint32_t)width, (uint32_t)height, 1u}, // extent
     1u, // nmips
     NGF_IMAGE_FORMAT_RGBA8, // image_format
-    0u, // nsamples
+    NGF_SAMPLE_COUNT_1, // samples
     NGF_IMAGE_USAGE_SAMPLE_FROM  |
     NGF_IMAGE_USAGE_XFER_DST // usage_hint
   };

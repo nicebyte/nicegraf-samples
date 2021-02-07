@@ -30,7 +30,7 @@ init_result on_initialized(uintptr_t native_handle,
   ngf_swapchain_info swapchain_info {
     NGF_IMAGE_FORMAT_BGRA8, // 8 bit per channel BGRA for color
     NGF_IMAGE_FORMAT_UNDEFINED,// NGF_IMAGE_FORMAT_DEPTH24_STENCIL8, // 24 bit depth, 8 bit stencil
-    4u, // 4x MSAA
+    8u, // 4x MSAA
     2u, // swapchain capacity
     initial_width,
     initial_height,
@@ -86,6 +86,9 @@ init_result on_initialized(uintptr_t native_handle,
   pipeline_data.depth_stencil_info.depth_test = true;
   pipeline_data.depth_stencil_info.depth_compare = NGF_COMPARE_OP_LESS;
   pipeline_data.depth_stencil_info.depth_write = true;
+
+  pipeline_data.multisample_info.sample_count = NGF_SAMPLE_COUNT_8;
+
   // Initialize the pipeline layout - we will have just one descriptor set
   // with one binding for a uniform buffer.
   ngf_descriptor_info desc_info {

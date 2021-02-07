@@ -101,7 +101,7 @@ init_result on_initialized(uintptr_t native_window_handle,
   pipeline_data.depth_stencil_info.depth_write = true;
 
   // Set up multisampling.
-  pipeline_data.multisample_info.multisample = true;
+  pipeline_data.multisample_info.sample_count = NGF_SAMPLE_COUNT_8;
   pipeline_data.multisample_info.alpha_to_coverage = false;
 
   // Set up pipeline's vertex input.
@@ -139,7 +139,7 @@ init_result on_initialized(uintptr_t native_window_handle,
     img_size,
     1u,
     NGF_IMAGE_FORMAT_RGBA8,
-    0u,
+    NGF_SAMPLE_COUNT_1,
     NGF_IMAGE_USAGE_SAMPLE_FROM
   };
   err = state->texture.initialize(img_info);
@@ -169,11 +169,11 @@ init_result on_initialized(uintptr_t native_window_handle,
   return { std::move(ctx), state };
 }
 
-void on_frame(uint32_t w, uint32_t h, float, void *userdata) {
+void on_frame(uint32_t w, uint32_t h, float, void *userdata, ngf_frame_token frame_token) {
   app_state      *state = (app_state*)userdata;
   ngf_cmd_buffer  b     = state->cmdbuf.get();
 
-  ngf_start_cmd_buffer(b);
+  ngf_start_cmd_buffer(b, frame_token);
   if (!state->resources_uploaded) {
     // Create the vertex attribute and index buffers.
     const float cube_vert_attribs[] = {
